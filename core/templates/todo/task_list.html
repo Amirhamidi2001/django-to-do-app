@@ -1,12 +1,61 @@
-<h1>To-Do List</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task List</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>My Tasks</h1>
 
-<ul>
-    {% for task in tasks %}
-        <li>
-            {{ task.title }} - {% if task.completed %}Completed{% else %}Pending{% endif %}
-            <a href="{% url 'todo:task_update' task.pk %}">Mark as completed</a>
-        </li>
-    {% endfor %}
-</ul>
+        <div class="mb-3">
+            <a href="{% url 'todo:task_create' %}" class="btn btn-primary">Create New Task</a>
+        </div>
 
-<a href="{% url 'todo:task_create' %}">Add New Task</a>
+        <!-- Task List Table -->
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ task.title }}</td>
+                        <td>
+                            {% if task.completed %}
+                                <span class="badge badge-success">Completed</span>
+                            {% else %}
+                                <span class="badge badge-warning">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'todo:task_update' task.pk %}" class="btn btn-sm btn-info">Update</a>
+                            <!-- Optionally, add a delete button here -->
+                            <form action="{% url 'todo:task_delete' task.pk %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center">No tasks available</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
